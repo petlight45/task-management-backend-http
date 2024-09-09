@@ -17,8 +17,7 @@ services:
       - rabbitmq
       - mongodb
   rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: 'rabbitmq'
+    image: 'bitnami/rabbitmq:latest'
     ports:
       - 5672:5672
       - 15672:15672
@@ -27,9 +26,5 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
   mongodb:
     image: mongo:6.0
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: db_admin
-      MONGO_INITDB_ROOT_PASSWORD: yazzVyePbMAkn6u3p7
-      MONGO_INITDB_DATABASE: taskman
     volumes:
-      - ~/.docker-conf/mongodb/data/:/data/db
+      - ~/.docker-conf/mongodb/data2/:/data/db
