@@ -26,6 +26,4 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: yazzVyePbMAkn6u3p7
       MONGO_INITDB_DATABASE: taskman
     volumes:
-      - /home/mongodb-db-data-bcp/:/data/db
-    cpuset: "0,1"
-    restart: "on-failure"
+      - ~/.docker-conf/mongodb/data/:/data/db
