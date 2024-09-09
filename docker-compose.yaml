@@ -14,7 +14,6 @@ services:
     ports:
       - 5003:5000
     depends_on:
-      - rabbitmq
       - mongodb
 #  rabbitmq:
 #    image: 'bitnami/rabbitmq:latest'
