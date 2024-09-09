@@ -10,6 +10,9 @@ services:
       - .env
     ports:
       - 5003:5000
+    depends_on:
+      - rabbitmq
+      - mongodb
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: 'rabbitmq'
