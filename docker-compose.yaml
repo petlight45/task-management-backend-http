@@ -8,6 +8,7 @@ services:
     command: bash -c "/wait && npm start"
     environment:
       WAIT_HOSTS: mongodb:27017, rabbitmq:5762
+      WAIT_TIMEOUT: 60
     env_file:
       - .env
     ports:
