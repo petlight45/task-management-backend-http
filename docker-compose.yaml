@@ -1,0 +1,31 @@
+version: '3.3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./devops/docker/node/Dockerfile
+    image: backend_http:latest
+    command: bash -c "npm start"
+    env_file:
+      - .env
+    ports:
+      - 5003:5000
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+  mongodb:
+    image: mongo:6.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: db_admin
+      MONGO_INITDB_ROOT_PASSWORD: yazzVyePbMAkn6u3p7
+      MONGO_INITDB_DATABASE: taskman
+    volumes:
+      - /home/mongodb-db-data-bcp/:/data/db
+    cpuset: "0,1"
+    restart: "on-failure"
