@@ -2,8 +2,12 @@ import express from 'express'
 import CustomException from "../../helpers/exceptions/custom_exception";
 import {HTTPResponseStatusCode} from "../../helpers/definitions/response";
 import CoreExceptionModelItemNotFoundException from "../../core/exception";
+import {LoggerPort} from "../logger";
 
 export const exceptionHandlerMiddleware = async (err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    // @ts-ignore
+    const logger: LoggerPort = req.container.resolve<LoggerPort>('logger');
+    logger.error(err)
     if (err instanceof CustomException) {
         // @ts-ignore
         return res.status(err.status_code).json({
@@ -17,7 +21,6 @@ export const exceptionHandlerMiddleware = async (err: any, req: express.Request,
             errors: err.errors
         })
     } else {
-        console.log(err)
         // @ts-ignore
         return res.status(HTTPResponseStatusCode.INTERNAL_SERVER_ERROR).json({
             message: "An unknown error was encountered",

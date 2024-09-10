@@ -1,6 +1,5 @@
 import User, {UserInterface} from "../../core/user/model/User";
 import {BaseRepository} from './index';
-import CoreExceptionModelItemNotFoundException from "../../core/exception";
 
 export default class UserRepository extends BaseRepository<UserInterface> {
     constructor() {

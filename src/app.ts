@@ -1,4 +1,3 @@
-import morgan from "morgan"
 import express from "express";
 import {scopePerRequest} from 'awilix-express';
 import cors from 'cors';
@@ -10,17 +9,20 @@ import {exceptionHandlerMiddleware} from "./ports/middlewares/exception";
 import {JWTAuthenticationMiddleware} from "./ports/middlewares/authentication";
 import {TaskRouter} from "./ports/routers/task";
 import container from "./infrastructure/container";
+import {morganMiddleware} from "./ports/middlewares/logger";
+import {LoggerPort} from "./ports/logger";
 
 AppConfig.initiate()
 
 //Initializing basic variables
 const serverPort = AppConfig.SERVER_PORT
+const logger: LoggerPort = container.resolve<LoggerPort>("logger")
 //Initializing the express app
 const app = express()
 // MiddleWares
 app.use(cors());
 app.use(scopePerRequest(container));
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
+app.use(morganMiddleware(logger))
 app.use(bodyParser.urlencoded({extended: false}), bodyParser.json())
 
 app.use(JWTAuthenticationMiddleware)
@@ -40,9 +42,9 @@ app.use((req: express.Request, res: express.Response) => {
 app.use(exceptionHandlerMiddleware)
 
 const messageQueue = container.resolve('messageQueue');
-messageQueue.connectAndInitializeChannel().catch(console.error)
+messageQueue.connectAndInitializeChannel().catch((err) => logger.error(err as string | Error)).then((res) => logger.info("Successfully connected to message queue"))
 
 //Listening
 app.listen(serverPort, () => {
-    console.log(`Server listening on port ${serverPort}`)
+    logger.info(`Server listening on port ${serverPort}`)
 })

@@ -1,22 +1,26 @@
 import Task, {TaskParams} from "./index";
 import {TaskMessageEventType} from "./enums";
+import {LoggerPort} from "../../ports/logger";
 
 type TaskServiceParams = {
     taskRepository: any;
     messageQueue: any
     appConfig: any
+    logger: LoggerPort
 };
 
 export default class TaskService {
     private taskRepository?: any;
     private messageQueue?: any;
     private appConfig?: any;
+    private logger;
 
 
     constructor(params: TaskServiceParams) {
         this.taskRepository = params.taskRepository;
         this.messageQueue = params.messageQueue;
         this.appConfig = params.appConfig;
+        this.logger = params.logger;
     }
 
     private sendMessageToQueue(message: any) {

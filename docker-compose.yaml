@@ -15,12 +15,12 @@ services:
       - 5003:5000
     depends_on:
       - mongodb
-#  rabbitmq:
-#    image: 'bitnami/rabbitmq:latest'
-#    user: "root"
-#    ports:
-#      - 5672:5672
-#      - 15672:15672
+  #  rabbitmq:
+  #    image: 'bitnami/rabbitmq:latest'
+  #    user: "root"
+  #    ports:
+  #      - 5672:5672
+  #      - 15672:15672
   mongodb:
     image: mongo:6.0
     volumes:

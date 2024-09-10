@@ -2,11 +2,8 @@ import CustomException from "../../helpers/exceptions/custom_exception";
 import {HTTPResponseStatusCode} from "../../helpers/definitions/response";
 import User, {UserParams} from "./index";
 import AppConfig from "../../config";
-import AuthService from "../../adapters/service/auth";
-import UserRepository from "../../adapters/repository/user";
 import ExceptionsHelper from "../../helpers/exceptions";
 import {DateTimeHelpers} from "../../helpers/commons/date_time";
-import container from "../../infrastructure/container";
 
 type UserServiceParams = {
     userRepository: any;
@@ -86,15 +83,13 @@ export default class UserService {
 
     async refreshUserToken(data: UserServiceParamsRefreshUserToken) {
         const {refreshToken} = data;
-        const authService = container.resolve<AuthService>('authService');
-        const userRepository = container.resolve<UserRepository>('userRepository');
         let decoded = ExceptionsHelper.executeCallbackSync({
-            callback: () => authService.decodeToken(refreshToken)
+            callback: () => this.authService.decodeToken(refreshToken)
         })
         if (decoded.is_success) {
             decoded = decoded.data
             if (decoded?.type === "REFRESH" && DateTimeHelpers.currentTimeInSecs() < decoded?.exp) {
-                const user = await userRepository.findByEmail(decoded.email)
+                const user = await this.userRepository.findByEmail(decoded.email)
                 if (user) {
                     return {
                         access: this.authService.generateToken(user, "ACCESS", `${AppConfig.ACCESS_TOKEN_EXPIRY_SECS}s`)
@@ -111,15 +106,13 @@ export default class UserService {
 
     async fetchUserProfileByAccessToken(data: UserServiceParamsFetchProfileByAccessToken) {
         const {accessToken} = data;
-        const authService = container.resolve<AuthService>('authService');
-        const userRepository = container.resolve<UserRepository>('userRepository');
         let decoded = ExceptionsHelper.executeCallbackSync({
-            callback: () => authService.decodeToken(accessToken)
+            callback: () => this.authService.decodeToken(accessToken)
         })
         if (decoded.is_success) {
             decoded = decoded.data
             if (decoded?.type === "ACCESS" && DateTimeHelpers.currentTimeInSecs() < decoded?.exp) {
-                const user = await userRepository.findByEmail(decoded.email)
+                const user = await this.userRepository.findByEmail(decoded.email)
                 if (user) {
                     return (new User(user as UserParams)).dataMini
                 }

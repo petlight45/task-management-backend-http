@@ -10,6 +10,8 @@ import TaskRepository from "../adapters/repository/task";
 import AppConfig from "../config";
 import {MessageQueuePort} from "../ports/message_queue";
 import {RabbitMQAdapter} from "../adapters/message_queue/rabbit_mq";
+import {LoggerPort} from "../ports/logger";
+import {WinstonLogger} from "../adapters/logger/winston";
 
 type ContainerDependencies = {
     userRepository: UserRepository;
@@ -20,14 +22,14 @@ type ContainerDependencies = {
     userController: UserController;
     taskController: TaskController;
     appConfig: any,
-    messageQueue: MessageQueuePort
+    messageQueue: MessageQueuePort,
+    logger: LoggerPort
 }
 AppConfig.initiate()
-connectToDatabase();
 const container: AwilixContainer<ContainerDependencies> = createContainer<ContainerDependencies>();
 
 
-export default container.register({
+container.register({
     userRepository: asClass(UserRepository).singleton(),
     taskRepository: asClass(TaskRepository).singleton(),
     authService: asClass(AuthService).singleton(),
@@ -36,5 +38,10 @@ export default container.register({
     userController: asClass(UserController,).singleton(),
     taskController: asClass(TaskController,).singleton(),
     appConfig: asValue(AppConfig),
-    messageQueue: asClass(RabbitMQAdapter).singleton()
+    messageQueue: asClass(RabbitMQAdapter).singleton(),
+    logger: asClass(WinstonLogger).singleton()
 });
+
+connectToDatabase(container.cradle.logger);
+
+export default container
