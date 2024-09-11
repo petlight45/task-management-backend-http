@@ -47,7 +47,7 @@ To get started with this project, follow these steps:
 
  EXPRESS_APP_RABBIT_MQ_URL= The connection uri to the message queue(Rabbit MQ) used by this server for asynchronous inter-service communication with the Websocket server 
  
- EXPRESS_APP_MESSAGE_QUEUE_NAME=The queue name that binds this server and the websocket server together, this server sends to this queue, while the WS server reads from it
+ EXPRESS_APP_MESSAGE_QUEUE_NAME=The queue name that binds this server and the websocket server together, this server sends to this queue, while the WS server consumes from it
  
  
  ## Running the Server
@@ -69,6 +69,8 @@ Or this, in case the above did not work
 ## Testing
  
  To run the unit tests and integration tests:
+ 
+ Configure the environmental variables because of the integration tests
  
  Run this
  
