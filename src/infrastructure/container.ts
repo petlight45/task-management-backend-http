@@ -3,7 +3,6 @@ import UserRepository from "../adapters/repository/user";
 import AuthService from "../adapters/service/auth";
 import UserService from "../core/user/service";
 import UserController from '../ports/controllers/user';
-import connectToDatabase from "../infrastructure/db/mongoose";
 import TaskController from "../ports/controllers/task";
 import TaskService from "../core/task/service";
 import TaskRepository from "../adapters/repository/task";
@@ -42,6 +41,5 @@ container.register({
     logger: asClass(WinstonLogger).singleton()
 });
 
-connectToDatabase(container.cradle.logger);
 
 export default container

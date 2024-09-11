@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import AppConfig from "../../config";
 import {LoggerPort} from "../../ports/logger";
 
-const connectToDatabase = async (logger: LoggerPort) => {
+export const connectToDatabase = async (logger: LoggerPort) => {
     try {
         await mongoose.connect(AppConfig.DATABASE_URL as string, {
             // @ts-ignore
@@ -15,4 +15,7 @@ const connectToDatabase = async (logger: LoggerPort) => {
     }
 };
 
-export default connectToDatabase;
+export const disconnectFromDatabase = async (logger: LoggerPort) => {
+    await mongoose.connection.close();
+    logger.info('Successfully disconnected to the database');
+};

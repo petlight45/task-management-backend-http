@@ -37,10 +37,10 @@ export class WinstonLogger implements LoggerPort {
     info(message: string): void {
         this.logger.info(message);
     }
-
-    warn(message: string): void {
-        this.logger.warn(message);
-    }
+    //
+    // warn(message: string): void {
+    //     this.logger.warn(message);
+    // }
 
     error(message: string | Error): void {
         if (message instanceof Error) {

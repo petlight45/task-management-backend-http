@@ -2,7 +2,6 @@ import express from "express";
 import {scopePerRequest} from 'awilix-express';
 import cors from 'cors';
 import bodyParser from "body-parser"
-import AppConfig from "./config";
 import {UserRouter} from "./ports/routers/user";
 import {HTTPResponseStatusCode} from "./helpers/definitions/response";
 import {exceptionHandlerMiddleware} from "./ports/middlewares/exception";
@@ -11,12 +10,13 @@ import {TaskRouter} from "./ports/routers/task";
 import container from "./infrastructure/container";
 import {morganMiddleware} from "./ports/middlewares/logger";
 import {LoggerPort} from "./ports/logger";
+import {connectToDatabase} from "./infrastructure/db/mongoose";
 
-AppConfig.initiate()
 
 //Initializing basic variables
-const serverPort = AppConfig.SERVER_PORT
-const logger: LoggerPort = container.resolve<LoggerPort>("logger")
+const AppConfig = container.resolve("appConfig")
+export const serverPort = AppConfig.SERVER_PORT
+export const logger: LoggerPort = container.resolve<LoggerPort>("logger")
 //Initializing the express app
 const app = express()
 // MiddleWares
@@ -41,10 +41,10 @@ app.use((req: express.Request, res: express.Response) => {
 
 app.use(exceptionHandlerMiddleware)
 
-const messageQueue = container.resolve('messageQueue');
-messageQueue.connectAndInitializeChannel().catch((err) => logger.error(err as string | Error)).then((res) => logger.info("Successfully connected to message queue"))
+export const startApp = async (): Promise<void> => {
+    const messageQueue = container.resolve('messageQueue');
+    await messageQueue.connectAndInitializeChannel().catch((err) => logger.error(err as string | Error)).then((res) => logger.info("Successfully connected to message queue"))
+    await connectToDatabase(logger);
 
-//Listening
-app.listen(serverPort, () => {
-    logger.info(`Server listening on port ${serverPort}`)
-})
+};
+export default app;

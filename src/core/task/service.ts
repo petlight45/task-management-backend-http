@@ -13,7 +13,7 @@ export default class TaskService {
     private taskRepository?: any;
     private messageQueue?: any;
     private appConfig?: any;
-    private logger;
+    private logger?: any;
 
 
     constructor(params: TaskServiceParams) {
@@ -38,22 +38,22 @@ export default class TaskService {
         });
     }
 
-    async fetchMultipleTasks(filterParams: any, sortParams?: any, expansionParams?: any) {
+    async fetchMultipleTasks(filterParams?: any, sortParams?: any, expansionParams?: any) {
         return await this.taskRepository.fetchMultiple(filterParams, sortParams, expansionParams);
     }
 
-    async fetchSingleTask(id: string, filterParams: any, expansionParams?: any) {
+    async fetchSingleTask(id: string, filterParams?: any, expansionParams?: any) {
         return await this.taskRepository.fetchSingle({_id: id, ...filterParams}, false, expansionParams);
     }
 
-    async updateTask(id: string, data: any, filterParams: any) {
+    async updateTask(id: string, data: any, filterParams?: any) {
         return await this.taskRepository.update({_id: id, ...filterParams}, data).then((res: any) => {
             this.sendMessageToQueue({eventType: TaskMessageEventType.ON_TASK_UPDATED, payload: res})
             return res
         });
     }
 
-    async deleteTask(id: string, filterParams: any) {
+    async deleteTask(id: string, filterParams?: any) {
         return await this.taskRepository.delete({_id: id, ...filterParams}).then((res: any) => {
             this.sendMessageToQueue({eventType: TaskMessageEventType.ON_TASK_DELETED, payload: res})
             return res

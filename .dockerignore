@@ -5,3 +5,4 @@ docker-compose.yaml
 .gitignore
 LICENCE
 README.md
+coverage
