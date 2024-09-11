@@ -8,6 +8,8 @@ This project is a Node.js HTTP server built with Express and TypeScript, followi
 - **Awilix**: Dependency Injection container for managing application dependencies.
 - **RabbitMQ**: Message broker for asynchronous communication with a WebSocket service.
 - **Jest**: Testing framework for unit testing.
+- **Winston & Morgan**: Extensive Logging
+
 
 ## Table of Contents
 
